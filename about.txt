@@ -4,3 +4,8 @@
 所以JS和Google Firebase的部分都是严格按照DeepSeek的指令干的（？
 现在还是InDev版本，之后网站会继续进行优化，谢谢大家。
 2025/5/1 上午7:39
+
+让DeepSeek帮忙教我搞了一下关于Firebase国内连接不上的问题，
+顺便把JS代码移到单独的文件里了。
+zjnw.netlify.app
+2025/5/1 下午6:27
