@@ -16,6 +16,29 @@ window.fetch = async (input, init) => {
 
     return originalFetch(url, init);
 };
+// 覆盖 XMLHttpRequest
+const originalXHROpen = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function(method, url) {
+  const proxiedUrl = shouldProxy(url) ? proxyUrl(url) : url;
+  originalXHROpen.call(this, method, proxiedUrl);
+};
+
+// 覆盖 WebSocket
+const originalWebSocket = window.WebSocket;
+window.WebSocket = function(url, protocols) {
+  const proxiedUrl = shouldProxy(url) ? proxyUrl(url) : url;
+  return new originalWebSocket(proxiedUrl, protocols);
+};
+
+// 判断是否需要代理
+function shouldProxy(url) {
+  return /(firebase|googleapis)\.com/.test(url);
+}
+
+// 生成代理后的 URL
+function proxyUrl(url) {
+  return url.replace('https://', 'https://firebase-proxy.stkd76mj26.workers.dev');
+}
 // 替换为你的Firebase配置（项目设置中可以找到）
 const firebaseConfig = {
     apiKey: "AIzaSyAbg6-v3k1nwFvnajn1FDEgu1Ci4yA6Bx8",
