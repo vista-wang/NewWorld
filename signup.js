@@ -1,44 +1,4 @@
 //因为不会JS所有下面的代码都是DeepSeek写的（0v0）
-// 替换为你的 Cloudflare Worker 地址
-const WORKER_URL = 'https://firebase-proxy.stkd76mj26.workers.dev';
-
-// 覆盖原生 fetch 方法
-const originalFetch = window.fetch;
-window.fetch = async (input, init) => {
-    let url = typeof input === 'string' ? input : input.url;
-
-    // 匹配需要代理的 Firebase 域名
-    const isFirebaseReq = /(firebase|googleapis)\.com/.test(url);
-
-    if (isFirebaseReq) {
-        url = url.replace('https://', `${WORKER_URL}/`);
-    }
-
-    return originalFetch(url, init);
-};
-// 覆盖 XMLHttpRequest
-const originalXHROpen = XMLHttpRequest.prototype.open;
-XMLHttpRequest.prototype.open = function(method, url) {
-  const proxiedUrl = shouldProxy(url) ? proxyUrl(url) : url;
-  originalXHROpen.call(this, method, proxiedUrl);
-};
-
-// 覆盖 WebSocket
-const originalWebSocket = window.WebSocket;
-window.WebSocket = function(url, protocols) {
-  const proxiedUrl = shouldProxy(url) ? proxyUrl(url) : url;
-  return new originalWebSocket(proxiedUrl, protocols);
-};
-
-// 判断是否需要代理
-function shouldProxy(url) {
-  return /(firebase|googleapis)\.com/.test(url);
-}
-
-// 生成代理后的 URL
-function proxyUrl(url) {
-  return url.replace('https://', 'https://firebase-proxy.stkd76mj26.workers.dev');
-}
 // 替换为你的Firebase配置（项目设置中可以找到）
 const firebaseConfig = {
     apiKey: "AIzaSyAbg6-v3k1nwFvnajn1FDEgu1Ci4yA6Bx8",
